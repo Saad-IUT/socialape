@@ -121,7 +121,7 @@ exports.uploadImage = (req, res) => {
     ).toString()}.${imageExtension}`
     const filepath = path.join(os.tmpdir(), imageFileName)
     imageToBeUploaded = { filepath, mimetype }
-    file.pipe(fs, createWriteStream(filepath))
+    file.pipe(fs.createWriteStream(filepath))
   })
   busboy.on('finish', () => {
     admin
