@@ -12,6 +12,8 @@ exports.getAllScreams = (req, res) => {
           body: doc.data().body,
           userHandle: doc.data().userHandle,
           createdAt: doc.data().createdAt,
+          commentCount: doc.data().commentCount,
+          likeCount: doc.data().likeCount,
           userImage: doc.data().userImage,
         })
       })
@@ -92,7 +94,6 @@ exports.commentOnScream = (req, res) => {
     userHandle: req.user.handle,
     userImage: req.user.imageUrl,
   }
-  // console.log(newComment)
 
   db.doc(`/screams/${req.params.screamId}`)
     .get()
@@ -109,7 +110,7 @@ exports.commentOnScream = (req, res) => {
       res.json(newComment)
     })
     .catch(err => {
-      console.log(err)
+      console.error(err)
       res.status(500).json({ error: 'Something went wrong' })
     })
 }

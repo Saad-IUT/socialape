@@ -90,14 +90,9 @@ exports.login = (req, res) => {
     })
     .catch(err => {
       console.error(err)
-      if (
-        err.code === 'auth/wrong-password' ||
-        err.code === 'auth/user-not-found'
-      ) {
-        return res
-          .status(403)
-          .json({ general: 'Wrong credentials, please try again' })
-      } else return res.status(500).json({ error: err.code })
+      return res
+        .status(403)
+        .json({ general: 'Wrong credentials, please try again' })
     })
 }
 
@@ -214,7 +209,6 @@ exports.uploadImage = (req, res) => {
   let imageToBeUploaded = {}
 
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    console.log(fieldname, file, filename, encoding, mimetype)
     if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
       return res.status(400).json({ error: 'Wrong file type submitted' })
     }
