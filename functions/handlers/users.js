@@ -11,7 +11,7 @@ const {
   reduceUserDetails,
 } = require('../util/validators')
 
-//Sign users up
+// Sign users up
 exports.signup = (req, res) => {
   const newUser = {
     email: req.body.email,
@@ -68,7 +68,7 @@ exports.signup = (req, res) => {
     })
 }
 
-//Log user in
+// Log user in
 exports.login = (req, res) => {
   const user = {
     email: req.body.email,

@@ -1,5 +1,6 @@
 const { db } = require('../util/admin')
 
+// Get all screams
 exports.getAllScreams = (req, res) => {
   db.collection('screams')
     .orderBy('createdAt', 'desc')
@@ -25,6 +26,7 @@ exports.getAllScreams = (req, res) => {
     })
 }
 
+// Post one scream
 exports.postOneScream = (req, res) => {
   if (req.body.body.trim() === '') {
     return res.status(400).json({ body: 'Must not be empty' })
@@ -82,7 +84,7 @@ exports.getScream = (req, res) => {
     })
 }
 
-// Comment on a comment
+// Comment on scream
 exports.commentOnScream = (req, res) => {
   if (req.body.body.trim() === '')
     return res.status(400).json({ comment: 'Must not be empty' })

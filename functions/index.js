@@ -24,7 +24,7 @@ const {
   markNotificationsRead,
 } = require('./handlers/users')
 
-//Scream routes
+// Scream routes
 app.get('/screams', getAllScreams)
 app.post('/scream', FBAuth, postOneScream)
 app.get('/scream/:screamId', getScream)
@@ -33,7 +33,7 @@ app.get('/scream/:screamId/like', FBAuth, likeScream)
 app.get('/scream/:screamId/unlike', FBAuth, unlikeScream)
 app.post('/scream/:screamId/comment', FBAuth, commentOnScream)
 
-//Users routes
+// Users routes
 app.post('/signup', signup)
 app.post('/login', login)
 app.post('/user/image', FBAuth, uploadImage)
@@ -44,7 +44,7 @@ app.post('/notifications', FBAuth, markNotificationsRead)
 
 exports.api = functions.region('asia-east2').https.onRequest(app)
 
-//Notification on like
+// Notification on like
 exports.createNotificationOnLike = functions
   .region('asia-east2')
   .firestore.document('likes/{id}')
@@ -70,7 +70,7 @@ exports.createNotificationOnLike = functions
       .catch(err => console.error(err))
   })
 
-//Delete notification on unlike
+// Delete notification on unlike
 exports.deleteNotificationOnUnLike = functions
   .region('asia-east2')
   .firestore.document('likes/{id}')
@@ -84,7 +84,7 @@ exports.deleteNotificationOnUnLike = functions
       })
   })
 
-//Notification on comment
+// Notification on comment
 exports.createNotificationOnComment = functions
   .region('asia-east2')
   .firestore.document('comments/{id}')
