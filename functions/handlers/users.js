@@ -1,6 +1,7 @@
 const { admin, db } = require('../util/admin')
 
 const config = require('../util/config')
+const { uuid } = require('uuidv4')
 
 const firebase = require('firebase')
 firebase.initializeApp(config)
@@ -48,6 +49,7 @@ exports.signup = (req, res) => {
         handle: newUser.handle,
         email: newUser.email,
         createdAt: new Date().toISOString(),
+        //TODO Append token to imageUrl. Work around just add token from image in storage.
         imageUrl: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImg}?alt=media`,
         userId,
       }
@@ -90,6 +92,8 @@ exports.login = (req, res) => {
     })
     .catch(err => {
       console.error(err)
+      // auth/wrong-password
+      // auth/user-not-user
       return res
         .status(403)
         .json({ general: 'Wrong credentials, please try again' })
@@ -205,17 +209,20 @@ exports.uploadImage = (req, res) => {
 
   const busboy = new BusBoy({ headers: req.headers })
 
-  let imageFileName
   let imageToBeUploaded = {}
+  let imageFileName
+  // String for image token
+  let generatedToken = uuid()
 
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
     if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
       return res.status(400).json({ error: 'Wrong file type submitted' })
     }
+    // my.image.png => ['my', 'image', 'png']
     const imageExtension = filename.split('.')[filename.split('.').length - 1]
-
+    // 32756238461724837.png
     imageFileName = `${Math.round(
-      Math.random() * 1000000000000
+      Math.random() * Date.now()
     ).toString()}.${imageExtension}`
     const filepath = path.join(os.tmpdir(), imageFileName)
     imageToBeUploaded = { filepath, mimetype }
@@ -230,11 +237,14 @@ exports.uploadImage = (req, res) => {
         metadata: {
           metadata: {
             contentType: imageToBeUploaded.mimetype,
+            //Generate token to be appended to imageUrl
+            firebaseStorageDownloadTokens: generatedToken,
           },
         },
       })
       .then(() => {
-        const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`
+        // Append token to url
+        const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media&token=${generatedToken}`
         return db.doc(`/users/${req.user.handle}`).update({ imageUrl })
       })
       .then(() => {
