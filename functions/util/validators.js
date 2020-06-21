@@ -4,10 +4,7 @@ const isEmail = email => {
   else return false
 }
 
-const isEmpty = string => {
-  if (string.trim() === '') return true
-  else return false
-}
+const isEmpty = string => (string.trim() === '' ? true : false)
 
 exports.validateSignupData = data => {
   let errors = {}
